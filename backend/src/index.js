@@ -13,6 +13,8 @@ import servicios from "./admin/servicios.js";
 import informesRouter from "./admin/informes.js";
 import usuariosRoutes from "./admin/usuarios.js";
 import horariosRoutes from "./admin/horarios.js";
+import horarioServicioRouter from "./admin/horario_servicio.js";
+
 import { pool } from "./db.js";
 
 console.log(
@@ -50,6 +52,7 @@ app.use("/api/servicios", servicios);
 app.use("/api/informes", informesRouter);
 app.use("/api/usuarios", usuariosRoutes);
 app.use("/api/horarios", horariosRoutes);
+app.use("/api/horario_servicio", horarioServicioRouter);
 
 
 
