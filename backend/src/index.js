@@ -9,6 +9,10 @@ import chatbotRoutes from "./chatbot.routes.js";
 import authRoutes from "./auth.routes.js";
 import reservasRoutes from "./reservasroutes.js";
 import notificacionesRoutes from "./notificaciones.routes.js";
+import servicios from "./admin/servicios.js";
+import informesRouter from "./admin/informes.js";
+import usuariosRoutes from "./admin/usuarios.js";
+import horariosRoutes from "./admin/horarios.js";
 import { pool } from "./db.js";
 
 console.log(
@@ -42,6 +46,10 @@ app.get("/api/health", (_req, res) => res.json({ ok: true }));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/reservas", reservasRoutes); 
+app.use("/api/servicios", servicios);
+app.use("/api/informes", informesRouter);
+app.use("/api/usuarios", usuariosRoutes);
+app.use("/api/horarios", horariosRoutes);
 
 
 
