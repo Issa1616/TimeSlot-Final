@@ -55,6 +55,14 @@ app.use("/api/horario_servicio", horarioServicioRouter);
 
 app.get("/api/health", (_req, res) => res.json({ ok: true }));
 
+app.use("/api/auth", authRoutes);
+app.use("/api/reservas", reservasRoutes); 
+app.use("/api/servicios", servicios);
+app.use("/api/informes", informesRouter);
+app.use("/api/usuarios", usuariosRoutes);
+app.use("/api/horarios", horariosRoutes);
+app.use("/api/horario_servicio", horarioServicioRouter);
+
 app.use((req, res) => res.status(404).json({ error: "Not found" }));
 
 const PORT = process.env.PORT || 4000;
