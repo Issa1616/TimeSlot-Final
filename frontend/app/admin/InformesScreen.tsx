@@ -1,8 +1,14 @@
 import React, { useEffect, useState } from "react";
+<<<<<<< HEAD
 import { Dimensions, ScrollView, StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { BarChart, PieChart } from "react-native-chart-kit";
 import { api } from "../../lib/api";
 import { useRouter } from "expo-router";
+=======
+import { Dimensions, ScrollView, StyleSheet, Text, View } from "react-native";
+import { BarChart, PieChart } from "react-native-chart-kit";
+import { api } from "../../lib/api";
+>>>>>>> 8cabad5b2d7cfad13b69eb377d2393c91d370e22
 
 interface ReservaData {
   fecha: string;
@@ -20,8 +26,11 @@ interface MedicoData {
 }
 
 export default function InformesScreen() {
+<<<<<<< HEAD
   const router = useRouter();
 
+=======
+>>>>>>> 8cabad5b2d7cfad13b69eb377d2393c91d370e22
   const [reservas, setReservas] = useState<ReservaData[]>([]);
   const [cancelaciones, setCancelaciones] = useState<CancelacionData[]>([]);
   const [porMedico, setPorMedico] = useState<MedicoData[]>([]);
@@ -76,9 +85,13 @@ export default function InformesScreen() {
   };
 
   const chartDataReservas = {
+<<<<<<< HEAD
     labels: reservas.map((r) =>
       new Date(r.fecha).toLocaleDateString("es-AR", { day: "2-digit", month: "short" })
     ),
+=======
+    labels: reservas.map((r) => new Date(r.fecha).toLocaleDateString("es-AR", { day: "2-digit", month: "short" })),
+>>>>>>> 8cabad5b2d7cfad13b69eb377d2393c91d370e22
     datasets: [{ data: reservas.map((r) => r.total_reservas) }],
   };
 
@@ -89,7 +102,11 @@ export default function InformesScreen() {
         <Text style={s.h2}>Estadísticas del negocio</Text>
       </View>
 
+<<<<<<< HEAD
       <ScrollView contentContainerStyle={{ alignItems: "center", paddingBottom: 120 }}>
+=======
+      <ScrollView contentContainerStyle={{ alignItems: "center", paddingBottom: 30 }}>
+>>>>>>> 8cabad5b2d7cfad13b69eb377d2393c91d370e22
         {/* Reservas por día */}
         <View style={s.card}>
           <Text style={s.title}>Reservas Confirmadas por Día</Text>
@@ -101,8 +118,11 @@ export default function InformesScreen() {
                 height={220}
                 fromZero
                 showValuesOnTopOfBars
+<<<<<<< HEAD
                 yAxisLabel=""
                 yAxisSuffix=""
+=======
+>>>>>>> 8cabad5b2d7cfad13b69eb377d2393c91d370e22
                 chartConfig={{
                   backgroundGradientFrom: "#fff",
                   backgroundGradientTo: "#fff",
@@ -114,6 +134,7 @@ export default function InformesScreen() {
                 style={{ borderRadius: 10 }}
               />
               <View style={s.resumen}>
+<<<<<<< HEAD
                 <Text>
                   Total de reservas confirmadas: <Text style={s.bold}>{resumen.total}</Text>
                 </Text>
@@ -123,6 +144,11 @@ export default function InformesScreen() {
                 <Text>
                   Promedio diario: <Text style={s.bold}>{resumen.promedio}</Text>
                 </Text>
+=======
+                <Text>Total de reservas confirmadas: <Text style={s.bold}>{resumen.total}</Text></Text>
+                <Text>Día con más reservas: <Text style={s.bold}>{resumen.maxDia}</Text></Text>
+                <Text>Promedio diario: <Text style={s.bold}>{resumen.promedio}</Text></Text>
+>>>>>>> 8cabad5b2d7cfad13b69eb377d2393c91d370e22
               </View>
             </>
           ) : (
@@ -132,6 +158,7 @@ export default function InformesScreen() {
 
         {/* Cancelaciones */}
         <View style={s.card}>
+<<<<<<< HEAD
           <Text style={s.title}>Cancelaciones por Día</Text>
           {cancelaciones.length > 0 ? (
             <BarChart
@@ -139,13 +166,23 @@ export default function InformesScreen() {
                 labels: cancelaciones.map((c) =>
                   new Date(c.fecha).toLocaleDateString("es-AR", { day: "2-digit", month: "short" })
                 ),
+=======
+          <Text style={s.title}>Cancelaciones</Text>
+          {cancelaciones.length > 0 ? (
+            <BarChart
+              data={{
+                labels: cancelaciones.map((c) => new Date(c.fecha).toLocaleDateString("es-AR", { day: "2-digit", month: "short" })),
+>>>>>>> 8cabad5b2d7cfad13b69eb377d2393c91d370e22
                 datasets: [{ data: cancelaciones.map((c) => c.total_cancelaciones) }],
               }}
               width={Dimensions.get("window").width - 60}
               height={220}
               fromZero
+<<<<<<< HEAD
               yAxisLabel=""
               yAxisSuffix=""
+=======
+>>>>>>> 8cabad5b2d7cfad13b69eb377d2393c91d370e22
               chartConfig={{
                 backgroundGradientFrom: "#fff",
                 backgroundGradientTo: "#fff",
@@ -169,7 +206,11 @@ export default function InformesScreen() {
               data={porMedico.map((m, i) => ({
                 name: m.nombre_medico,
                 population: m.total_reservas,
+<<<<<<< HEAD
                 color: ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#845EC2"][i % 5],
+=======
+                color: ["#0088FE","#00C49F","#FFBB28","#FF8042","#845EC2"][i % 5],
+>>>>>>> 8cabad5b2d7cfad13b69eb377d2393c91d370e22
                 legendFontColor: "#333",
                 legendFontSize: 12,
               }))}
@@ -186,6 +227,7 @@ export default function InformesScreen() {
         </View>
       </ScrollView>
 
+<<<<<<< HEAD
 
       {/* Bottom Bar */}
       <View style={s.bottomBar}>
@@ -206,6 +248,8 @@ export default function InformesScreen() {
         </TouchableOpacity>
       </View>
 
+=======
+>>>>>>> 8cabad5b2d7cfad13b69eb377d2393c91d370e22
       <View style={s.bottomLeft} />
       <View style={s.bottomRight} />
     </View>
@@ -214,6 +258,7 @@ export default function InformesScreen() {
 
 const s = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#fff", alignItems: "center" },
+<<<<<<< HEAD
   header: {
     backgroundColor: "#0E3A46",
     width: "130%",
@@ -239,10 +284,17 @@ const s = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     elevation: 4,
   },
+=======
+  header: { backgroundColor: "#0E3A46", width: "130%", height: 240, alignItems: "center", justifyContent: "center", borderBottomLeftRadius: 300, borderBottomRightRadius: 300 },
+  h1: { color: "#FFFFFF", fontSize: 30, fontWeight: "800", letterSpacing: 0.3 },
+  h2: { color: "#E6F1F4", fontSize: 15, fontWeight: "600", marginTop: 4 },
+  card: { width: 340, backgroundColor: "#fff", marginTop: 30, borderRadius: 16, borderWidth: 1, borderColor: "#E5E7EB", padding: 16, shadowColor: "#000", shadowOpacity: 0.08, shadowRadius: 8, shadowOffset: { width: 0, height: 4 }, elevation: 4 },
+>>>>>>> 8cabad5b2d7cfad13b69eb377d2393c91d370e22
   title: { fontSize: 18, fontWeight: "700", marginBottom: 10, textAlign: "center", color: "#0E3A46" },
   text: { textAlign: "center", color: "#666", marginTop: 10 },
   resumen: { marginTop: 16, gap: 6 },
   bold: { fontWeight: "600", color: "#0E3A46" },
+<<<<<<< HEAD
   bottomLeft: {
     position: "absolute",
     bottom: 0,
@@ -277,4 +329,8 @@ const s = StyleSheet.create({
   },
   bottomBtn: { flex: 1, alignItems: "center" },
   bottomIcon: { fontSize: 24, color: "#fff" },
+=======
+  bottomLeft: { position: "absolute", bottom: 0, left: -10, width: 90, height: 80, backgroundColor: "#0E3A46", borderTopRightRadius: 80 },
+  bottomRight: { position: "absolute", bottom: 0, right: -10, width: 90, height: 80, backgroundColor: "#0E3A46", borderTopLeftRadius: 80 },
+>>>>>>> 8cabad5b2d7cfad13b69eb377d2393c91d370e22
 });

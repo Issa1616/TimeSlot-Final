@@ -96,8 +96,11 @@ export default function InformesScreen() {
                 height={220}
                 fromZero
                 showValuesOnTopOfBars
+<<<<<<< HEAD
                 yAxisLabel=""
                 yAxisSuffix=""
+=======
+>>>>>>> 8cabad5b2d7cfad13b69eb377d2393c91d370e22
                 chartConfig={{
                   backgroundGradientFrom: "#fff",
                   backgroundGradientTo: "#fff",
@@ -121,6 +124,11 @@ export default function InformesScreen() {
 
         {/* Cancelaciones */}
         <View style={s.card}>
+<<<<<<< HEAD
+=======
+          <Text style={s.title}>Cancelaciones</Text>
+          {cancelaciones.length > 0 ? (
+>>>>>>> 8cabad5b2d7cfad13b69eb377d2393c91d370e22
             <BarChart
               data={{
                 labels: cancelaciones.map((c) => new Date(c.fecha).toLocaleDateString("es-AR", { day: "2-digit", month: "short" })),
@@ -129,8 +137,11 @@ export default function InformesScreen() {
               width={Dimensions.get("window").width - 60}
               height={220}
               fromZero
+<<<<<<< HEAD
               yAxisLabel=""
               yAxisSuffix=""
+=======
+>>>>>>> 8cabad5b2d7cfad13b69eb377d2393c91d370e22
               chartConfig={{
                 backgroundGradientFrom: "#fff",
                 backgroundGradientTo: "#fff",
@@ -143,7 +154,11 @@ export default function InformesScreen() {
             />
           ) : (
             <Text style={s.text}>No hay datos de cancelaciones</Text>
+<<<<<<< HEAD
           )
+=======
+          )}
+>>>>>>> 8cabad5b2d7cfad13b69eb377d2393c91d370e22
         </View>
 
         {/* Reservas por médico */}
