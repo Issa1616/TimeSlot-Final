@@ -8,7 +8,10 @@ import chatbotRoutes from "./chatbot.routes.js";
 import authRoutes from "./auth.routes.js";
 import reservasRoutes from "./reservasroutes.js";
 import notificacionesRoutes from "./notificaciones.routes.js";
+<<<<<<< HEAD
 
+=======
+>>>>>>> 8cabad5b2d7cfad13b69eb377d2393c91d370e22
 import servicios from "./admin/servicios.js";
 import informesRouter from "./admin/informes.js";
 import usuariosRoutes from "./admin/usuarios.js";
