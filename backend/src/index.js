@@ -6,7 +6,7 @@ dotenv.config({ override: true });
 
 import chatbotRoutes from "./chatbot.routes.js";
 import authRoutes from "./auth.routes.js";
-import reservasRoutes from "./reservasroutes.js";
+import reservasRoutes from "./reservasRoutes.js";
 import notificacionesRoutes from "./notificaciones.routes.js";
 
 import servicios from "./admin/servicios.js";
