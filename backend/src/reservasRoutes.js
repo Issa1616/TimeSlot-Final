@@ -1,9 +1,10 @@
+
 import { Router } from "express";
 import jwt from "jsonwebtoken";
 import { pool } from "./db.js";
 
 const r = Router();
-const reservas = []; 
+
 
 function auth(req, res, next) {
   const h = req.headers.authorization || "";
@@ -20,53 +21,67 @@ function auth(req, res, next) {
 
 r.get("/", auth, async (req, res) => {
   try {
-    const locales = reservas.filter((x) => x.userId === req.user.id);
-
     const [rows] = await pool.query(
       "SELECT id, area, profesional, fechaISO, hora, modalidad FROM reservas_chatbot WHERE user_id = ?",
       [req.user.id]
     );
 
-
-    const desdeChatbot = rows.map((r) => ({
+    const reservas = rows.map((r) => ({
       id: String(r.id),
       userId: req.user.id,
       area: r.area,
       profesional: r.profesional,
       fechaISO: r.fechaISO,
       hora: r.hora,
-      modalidad: r.modalidad || "Presencial",
+      modalidad: r.modalicad || "Presencial",
     }));
 
-    
-    const todas = [...locales, ...desdeChatbot];
-
-    res.json(todas);
+    res.json(reservas);
   } catch (e) {
     console.error("Error cargando reservas:", e);
     res.status(500).json({ error: "Error al cargar reservas" });
   }
 });
 
+r.post("/", auth, async (req, res) => {
+  try {
+    const { area, profesional, fechaISO, hora, modalidad } = req.body || {};
 
-r.post("/", auth, (req, res) => {
-  const { area, profesional, fechaISO, hora, modalidad } = req.body || {};
-  if (!area || !profesional || !fechaISO || !hora) {
-    return res.status(400).json({ error: "Datos incompletos" });
+    if (!area || !profesional || !fechaISO || !hora) {
+      return res.status(400).json({ error: "Datos incompletos" });
+    }
+
+    const [result] = await pool.query(
+      `INSERT INTO reservas_chatbot 
+        (user_id, area, profesional, fechaISO, hora, modalidad)
+       VALUES (?, ?, ?, ?, ?, ?)`,
+      [
+        req.user.id,
+        area,
+        profesional,
+        fechaISO,
+        hora,
+        modalidad || "Presencial",
+      ]
+    );
+
+    const insertId = result.insertId;
+
+    const nueva = {
+      id: String(insertId),
+      userId: req.user.id,
+      area,
+      profesional,
+      fechaISO,
+      hora,
+      modalidad: modalidad || "Presencial",
+    };
+
+    res.status(201).json(nueva);
+  } catch (e) {
+    console.error("Error creando reserva:", e);
+    res.status(500).json({ error: "Error al crear reserva" });
   }
-
-  const nuevo = {
-    id: String(Date.now()),
-    userId: req.user.id,
-    area,
-    profesional,
-    fechaISO,
-    hora,
-    modalidad: modalidad || "Presencial",
-  };
-
-  reservas.push(nuevo);
-  res.json(nuevo);
 });
 
 export default r;

@@ -13,6 +13,7 @@ import {
 } from "react-native";
 import { router } from "expo-router";
 import * as SecureStore from "expo-secure-store";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { api } from "../../lib/api";
 
 export default function Login() {
@@ -20,15 +21,43 @@ export default function Login() {
   const [pass, setPass] = useState("");
   const [loading, setLoading] = useState(false);
 
-const saveToken = async (token: string, user: any) => {
+  const saveToken = async (token: string, user: any) => {
     if (Platform.OS === "web") {
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
     } else {
-      await SecureStore.setItemAsync("token", token);
-      await SecureStore.setItemAsync("user", JSON.stringify(user));
+      try {
+        await AsyncStorage.setItem("token", token);
+        await AsyncStorage.setItem("user", JSON.stringify(user));
+      } catch (e) {
+        console.log("Error guardando en AsyncStorage:", e);
+      }
+
+      try {
+        await SecureStore.setItemAsync("token", token);
+        await SecureStore.setItemAsync("user", JSON.stringify(user));
+      } catch (e) {
+        console.log("Error guardando en SecureStore:", e);
+      }
     }
   };
+
+  const redirectByUser = (user: any) => {
+  const role = (user?.role || "").toLowerCase();
+
+  console.log("🔎 rol recibido en login:", role);
+
+  if (role === "admin") {
+    router.replace("/admin/InformesScreen");
+  } 
+  else if (role === "medico" || role === "médico") {
+    router.replace("/medico/HomeScreen");
+  } 
+  else {
+    router.replace("/home");
+  }
+};
+
 
   const onLogin = async () => {
     if (!email.trim() || !pass.trim()) {
@@ -41,12 +70,15 @@ const saveToken = async (token: string, user: any) => {
       const data = await api<{ token: string; user: any }>("/api/auth/login", {
         method: "POST",
         body: { email: email.trim(), password: pass.trim() },
+        withAuth: false,
       });
 
-      await saveToken(data.token, data.user);
+      console.log("🔐 Login response:", data);
 
-      router.replace("/home");
+      await saveToken(data.token, data.user);
+      redirectByUser(data.user);
     } catch (e: any) {
+      console.log("Login error:", e);
       alert(e?.message || "Error al iniciar sesión");
     } finally {
       setLoading(false);
@@ -152,11 +184,10 @@ const s = StyleSheet.create({
     paddingBottom: 24,
     paddingTop: 24,
   },
-
   header: {
     backgroundColor: "#0E3A46",
-    width: "120%",          
-    paddingVertical: 32,    
+    width: "120%",
+    paddingVertical: 32,
     alignItems: "center",
     justifyContent: "center",
     borderBottomLeftRadius: 300,
@@ -165,7 +196,7 @@ const s = StyleSheet.create({
   logo: { width: 64, height: 64, marginBottom: 6 },
   h1: {
     color: "#FFFFFF",
-    fontSize: 32,           
+    fontSize: 32,
     fontWeight: "800",
     letterSpacing: 0.3,
   },
@@ -175,9 +206,8 @@ const s = StyleSheet.create({
     fontWeight: "700",
     marginTop: 2,
   },
-
   card: {
-    width: "88%",           
+    width: "88%",
     maxWidth: 380,
     backgroundColor: "#fff",
     marginTop: 24,
@@ -212,7 +242,6 @@ const s = StyleSheet.create({
   primaryBtnText: { color: "#fff", fontWeight: "700" },
   registerText: { color: "#121314fc" },
   registerLink: { color: "#125496ff", fontWeight: "700" },
-
   bottomLeft: {
     position: "absolute",
     bottom: 0,

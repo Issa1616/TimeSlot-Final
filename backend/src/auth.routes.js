@@ -7,8 +7,8 @@ import crypto from "crypto";
 
 const r = Router();
 
-function signToken(userId) {
-  return jwt.sign({ id: userId }, process.env.JWT_SECRET, {
+function signToken(userId, role) {
+  return jwt.sign({ id: userId, role }, process.env.JWT_SECRET, {
     expiresIn: "7d",
   });
 }
@@ -33,9 +33,11 @@ r.post("/register", async (req, res) => {
 
     const hash = await bcrypt.hash(password, 10);
 
+    const finalRole = "paciente"; 
+
     const [result] = await pool.query(
-      "INSERT INTO users (name, last, email, password_hash) VALUES (?, ?, ?, ?)",
-      [name, last || null, email, hash]
+      "INSERT INTO users (name, last, email, password_hash, role) VALUES (?, ?, ?, ?, ?)",
+      [name, last || null, email, hash, finalRole]
     );
 
     const user = {
@@ -43,11 +45,11 @@ r.post("/register", async (req, res) => {
       name,
       last: last || null,
       email,
+      role: finalRole,
     };
 
-    const token = signToken(user.id);
-
-    return res.json({ token, user });
+    // ⚠ YA NO INICIA SESIÓN aquí. Registro solo crea usuario.
+    return res.json({ ok: true, user });
   } catch (err) {
     console.log("REGISTER ERROR:", err);
     return res.status(500).json({ error: "Error en el servidor" });
@@ -60,7 +62,7 @@ r.post("/login", async (req, res) => {
 
   try {
     const [rows] = await pool.query(
-      "SELECT id, name, last, email, password_hash FROM users WHERE email = ?",
+      "SELECT id, name, last, email, password_hash, role FROM users WHERE email = ?",
       [email]
     );
 
@@ -75,7 +77,7 @@ r.post("/login", async (req, res) => {
       return res.status(400).json({ error: "Credenciales inválidas" });
     }
 
-    const token = signToken(user.id);
+    const token = signToken(user.id, user.role);
 
     return res.json({
       token,
@@ -84,6 +86,7 @@ r.post("/login", async (req, res) => {
         name: user.name,
         last: user.last,
         email: user.email,
+        role: user.role,
       },
     });
   } catch (err) {
@@ -107,11 +110,11 @@ r.post("/forgot", async (req, res) => {
     );
 
     if (rows.length === 0) {
-      console.log("🟡 Intento de reset con email NO registrado:", email);
+      console.log("Intento reset email NO existe:", email);
       return res.json({
         ok: true,
         message:
-          "Si el correo está registrado, se enviarán instrucciones para restablecer la contraseña.",
+          "Si el correo está registrado, se enviarán instrucciones.",
       });
     }
 
@@ -120,27 +123,18 @@ r.post("/forgot", async (req, res) => {
     const token = crypto.randomBytes(20).toString("hex");
     const expires = new Date(Date.now() + 1000 * 60 * 30);
 
-
-    console.log(
-      "🔐 Reset solicitado:",
-      email,
-      "| userId:",
-      userId,
-      "| token:",
-      token
-    );
+    console.log("Reset solicitado:", email, token);
 
     return res.json({
       ok: true,
       message:
-        "Te enviamos un correo con los pasos para restablecer la contraseña (simulado).",
+        "Te enviamos un correo con los pasos (simulado).",
     });
   } catch (err) {
     console.log("FORGOT ERROR:", err);
     return res.status(500).json({ error: "Error en el servidor" });
   }
 });
-
 
 r.post("/reset", async (req, res) => {
   const { token, password } = req.body;
