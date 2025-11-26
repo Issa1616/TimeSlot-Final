@@ -47,7 +47,7 @@ r.get("/medico/:medicoId", async (req, res) => {
     const [rows] = await pool.query(
       `SELECT r.id, r.estado, r.fecha_creacion,
               hs.fecha, hs.hora_inicio, hs.hora_fin,
-              s.nombre AS servicio,
+              s.nombre AS servicio_nombre,
               u.id AS paciente_id, u.name AS paciente_name, u.last AS paciente_last
        FROM reservas r
        JOIN horario_servicio hs ON r.horario_servicio_id = hs.id
@@ -64,5 +64,34 @@ r.get("/medico/:medicoId", async (req, res) => {
     res.status(500).json({ error: "Error al obtener reservas del médico" });
   }
 });
+
+r.put("/estado/:reservaId", auth, async (req, res) => {
+  const { reservaId } = req.params;
+  const { estado } = req.body;
+
+  const estadosValidos = ["pendiente", "confirmada", "cancelada"];
+  if (!estadosValidos.includes(estado)) {
+    return res.status(400).json({ error: "Estado no válido" });
+  }
+
+  try {
+    const [result] = await pool.query(
+      `UPDATE reservas
+       SET estado = ?
+       WHERE id = ?`,
+      [estado, reservaId]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "Reserva no encontrada" });
+    }
+
+    res.json({ ok: true, msg: `Reserva actualizada a ${estado}` });
+  } catch (e) {
+    console.error("Error actualizando estado reserva:", e);
+    res.status(500).json({ error: "Error al actualizar reserva" });
+  }
+});
+
 
 export default r;
